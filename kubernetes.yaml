@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: myapp1
-        image: us-central1-docker.pkg.dev/aksgkelearning/myapps-repository/myapp1:22da96c
+        image: us-central1-docker.pkg.dev/aksgkelearning/myapps-repository/myapp1:3647380
         ports:
         - containerPort: 80
 ---
