@@ -13,6 +13,20 @@ steps:
   #- 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'  
   - 'CLOUDSDK_CONTAINER_CLUSTER=standard-cluster-private-1' # Provide GKE Cluster Name
 
+# Access the id_github file from Secret Manager, and setup SSH
+- name: 'gcr.io/cloud-builders/git'
+  secretEnv: ['SSH_KEY']
+  entrypoint: 'bash'
+  args:
+  - -c
+  - |
+    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+    chmod 400 /root/.ssh/id_rsa
+    cp known_hosts.github /root/.ssh/known_hosts
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
 # This step copies the applied manifest to the production branch
 # The COMMIT_SHA variable is automatically
 # replaced by Cloud Build.
@@ -33,7 +47,15 @@ steps:
     $(git log --format=%B -n 1 $COMMIT_SHA)" && \
     # Push the changes back to Cloud Source Repository
     git push origin production
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
 # [END cloudbuild-delivery]
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/420039265868/secrets/keneobum881-github/versions/latest
+    env: 'SSH_KEY'
 
 options:
   logging: CLOUD_LOGGING_ONLY
