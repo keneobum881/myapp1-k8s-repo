@@ -34,3 +34,6 @@ steps:
     # Push the changes back to Cloud Source Repository
     git push origin production
 # [END cloudbuild-delivery]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
